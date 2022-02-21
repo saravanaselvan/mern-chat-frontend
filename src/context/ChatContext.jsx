@@ -12,6 +12,7 @@ const Context = ({ children }) => {
   const [chats, setChats] = useState([]);
   const [currentChat, setCurrentChat] = useState();
   const [typingUserId, setTypingUserId] = useState();
+  const [showContactInfo, setShowContactInfo] = useState(false);
   const history = useHistory();
   useEffect(() => {
     setSocket(io());
@@ -38,6 +39,8 @@ const Context = ({ children }) => {
         setCurrentChat,
         typingUserId,
         setTypingUserId,
+        showContactInfo,
+        setShowContactInfo,
       }}
     >
       {children}

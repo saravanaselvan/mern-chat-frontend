@@ -9,9 +9,11 @@ import EmptyChatBox from "../components/EmptyChatBox";
 import { ChatState } from "../context/ChatContext";
 
 import { useHistory } from "react-router-dom";
+import ProfileDrawer from "../components/ProfileDrawer";
+import ContactInfo from "../components/ContactInfo";
 
 const ChatPage = () => {
-  const { user, currentChat, setCurrentChat } = ChatState();
+  const { user, currentChat, setCurrentChat, showContactInfo } = ChatState();
   const history = useHistory();
   useEffect(() => {
     if (!localStorage.getItem("userInfo")) {
@@ -37,6 +39,7 @@ const ChatPage = () => {
         />
       </Flex>
       {currentChat ? <ChatBox /> : <EmptyChatBox />}
+      {currentChat && showContactInfo && <ContactInfo chat={currentChat} />}
     </Flex>
   );
 };

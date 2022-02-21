@@ -6,7 +6,8 @@ import { ChatState } from "../context/ChatContext";
 import { useEffect, useState } from "react";
 
 const ChatBoxTopBar = () => {
-  const { user, socket, currentChat, setTypingUserId } = ChatState();
+  const { user, socket, currentChat, setTypingUserId, setShowContactInfo } =
+    ChatState();
   const [isTyping, setIsTyping] = useState(false);
   let name;
   let pic;
@@ -39,8 +40,19 @@ const ChatBoxTopBar = () => {
 
   return (
     <HStack px="4" py="3" bg="gray.100" spacing="30px" zIndex="100">
-      <Avatar w="40px" h="40px" name={name} src={pic} cursor="pointer" />
-      <Flex direction="column">
+      <Avatar
+        w="40px"
+        h="40px"
+        name={name}
+        src={pic}
+        cursor="pointer"
+        onClick={() => setShowContactInfo(true)}
+      />
+      <Flex
+        direction="column"
+        cursor="pointer"
+        onClick={() => setShowContactInfo(true)}
+      >
         <Text fontSize="lg">{name}</Text>
         {isTyping ? <Text fontSize="xs">typing...</Text> : <>&nbsp;</>}
       </Flex>

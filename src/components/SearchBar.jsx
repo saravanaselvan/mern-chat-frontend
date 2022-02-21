@@ -8,6 +8,7 @@ import { ChatState } from "../context/ChatContext";
 const SearchBar = () => {
   const [isSearchIconVisible, setIsSearchIconVisible] = useState(true);
   const searchInputRef = useRef(null);
+  const searchIconRef = useRef(null);
   const { user, setSearchResults, searchQuery, setSearchQuery } = ChatState();
 
   const searchUsers = async (e) => {
@@ -28,11 +29,15 @@ const SearchBar = () => {
     <Box bg="white">
       <InputGroup>
         <InputLeftElement
-          onClick={() =>
-            isSearchIconVisible
-              ? searchInputRef.current.focus()
-              : searchInputRef.current.blur()
-          }
+          onClick={() => {
+            if (isSearchIconVisible) {
+              searchInputRef.current.focus();
+            } else {
+              setSearchQuery("");
+              searchIconRef.current.focus();
+            }
+          }}
+          ref={searchIconRef}
           children={
             <>
               <SearchIcon
@@ -80,12 +85,12 @@ const SearchBar = () => {
           ref={searchInputRef}
           value={searchQuery}
           onChange={searchUsers}
-          // onFocus={(e) => {
-          //   setIsSearchIconVisible(false);
-          // }}
-          // onBlur={(e) => {
-          //   setIsSearchIconVisible(true);
-          // }}
+          onFocus={(e) => {
+            setIsSearchIconVisible(false);
+          }}
+          onBlur={(e) => {
+            if (!searchQuery) setIsSearchIconVisible(true);
+          }}
         />
       </InputGroup>
     </Box>

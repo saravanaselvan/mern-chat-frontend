@@ -9,11 +9,11 @@ import {
 } from "@chakra-ui/modal";
 import { Text } from "@chakra-ui/react";
 
-const ProfileDrawer = ({ isOpen, onClose, user }) => {
+const ProfileDrawer = ({ isOpen, onClose, user, placement = "left" }) => {
   return (
     <Drawer
       size="sm"
-      placement="left"
+      placement={placement}
       onClose={onClose}
       isOpen={isOpen}
       closeOnOverlayClick="false"

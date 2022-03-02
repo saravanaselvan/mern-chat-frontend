@@ -6,6 +6,7 @@ import { useToast } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
+import { ChatState } from "../../context/ChatContext";
 
 const Signup = () => {
   const [name, setName] = useState();
@@ -19,7 +20,7 @@ const Signup = () => {
   const toast = useToast();
   const toastIdRef = useRef();
   const history = useHistory();
-
+  const { setUser } = ChatState();
   const postDetails = (pic) => {};
 
   const submitHandler = async (e) => {
@@ -70,6 +71,7 @@ const Signup = () => {
       });
 
       localStorage.setItem("userInfo", JSON.stringify(data));
+      setUser(data);
       setLoading(false);
       history.push("/chats");
     } catch (error) {

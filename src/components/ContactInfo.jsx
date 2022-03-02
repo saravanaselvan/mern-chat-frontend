@@ -23,13 +23,13 @@ const ContactInfo = () => {
     <Flex w="50%" bg="gray.100" h="100vh" flexDirection="column" pos="relative">
       <HStack
         px="4"
-        py="8"
+        py="5"
         bg="gray.100"
         spacing="30px"
         zIndex="100"
         borderBottomWidth="1px"
         borderLeft="1px solid #ddd"
-        h="75px"
+        // h="75px"
       >
         <CloseIcon
           mr="4"

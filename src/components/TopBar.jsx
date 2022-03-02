@@ -15,12 +15,13 @@ import MdStatusIcon from "../lib/MdStatusIcon";
 import ProfileDrawer from "./ProfileDrawer";
 
 const TopBar = () => {
-  const { user, setUser } = ChatState();
+  const { user, setUser, setCurrentChat } = ChatState();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const logOut = () => {
     localStorage.removeItem("userInfo");
     setUser(null);
+    setCurrentChat(null);
   };
   return (
     <HStack px="4" py="3" bg="gray.100" spacing="30px">
@@ -33,7 +34,7 @@ const TopBar = () => {
           cursor="pointer"
           onClick={onOpen}
         />
-        <ProfileDrawer isOpen={isOpen} onClose={onClose} user={user} />
+        <ProfileDrawer isOpen={isOpen} onClose={onClose} />
       </>
       <Spacer />
       <MdStatusIcon />
@@ -45,7 +46,7 @@ const TopBar = () => {
           _active={{ outline: "none" }}
           _focus={{ outline: "none" }}
           borderRadius={25}
-          icon={<MdMoreVert size="1.5em" color="#7c7a7a" cursor="pointer" />}
+          icon={<MdMoreVert />}
         />
         <MenuList>
           <MenuItem onClick={logOut}>Log out</MenuItem>

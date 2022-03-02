@@ -3,21 +3,34 @@ import { AttachmentIcon, Icon } from "@chakra-ui/icons";
 import { HStack } from "@chakra-ui/layout";
 import { Textarea } from "@chakra-ui/textarea";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MdEmojiEmotions, MdMic, MdSend } from "react-icons/md";
 import { ChatState } from "../context/ChatContext";
 
 const ChatBoxBottomBar = ({ updateMessages }) => {
   const [content, setContent] = useState();
-  const { user, socket, currentChat } = ChatState();
+  const { user, socket, currentChat, setSearchQuery } = ChatState();
+  const textareaRef = useRef();
 
+  useEffect(() => {
+    textareaRef.current.style.height = "40px";
+    const scrollHeight = textareaRef.current.scrollHeight;
+    textareaRef.current.style.height = scrollHeight + "px";
+  }, [content]);
+
+  useEffect(() => {
+    textareaRef.current.focus();
+  }, [currentChat]);
   const updateContent = (e) => {
-    setContent(e.target.value);
-    socket.emit("typing", { user, content: e.target.value });
+    if (e.key !== "Enter") {
+      setContent(e.target.value);
+      socket.emit("typing", { user, content: e.target.value });
+    }
   };
 
   const handleKeyDown = async (e) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && content.trim().length && !e.shiftKey) {
+      e.preventDefault();
       sendMessage();
     }
   };
@@ -25,7 +38,9 @@ const ChatBoxBottomBar = ({ updateMessages }) => {
   const sendMessage = async () => {
     const text = content;
     setContent("");
-    const { data } = await axios.post(
+    const {
+      data: { message, notification },
+    } = await axios.post(
       "/api/message",
       {
         chatId: currentChat._id,
@@ -39,8 +54,9 @@ const ChatBoxBottomBar = ({ updateMessages }) => {
         },
       }
     );
-    updateMessages(data);
-    socket.emit("send message", { user, message: data });
+    updateMessages(message);
+    setSearchQuery("");
+    socket.emit("send message", { user, message, notification });
   };
   return (
     <HStack
@@ -55,6 +71,7 @@ const ChatBoxBottomBar = ({ updateMessages }) => {
       <MdEmojiEmotions size="2em" color="#7c7a7a" cursor="pointer" />
       <AttachmentIcon h={6} w={6} color="gray.600" cursor="pointer" />
       <Textarea
+        ref={textareaRef}
         resize="none"
         minHeight="40px"
         focusBorderColor="none"
@@ -63,6 +80,7 @@ const ChatBoxBottomBar = ({ updateMessages }) => {
         value={content}
         onChange={updateContent}
         onKeyDown={handleKeyDown}
+        placeholder="Type a message"
       />
       {content ? (
         <Icon

@@ -13,58 +13,65 @@ const ChatBox = () => {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
-  const fetchMessages = async () => {
-    try {
-      setIsLoading(true);
-      const { data } = await axios.get("/api/message", {
-        params: {
-          chatId: currentChat._id,
-        },
 
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user.token}`,
-        },
-      });
-      setMessages(data);
-      setIsLoading(false);
-    } catch (error) {
-      toast({
-        title: "Error Occurred!",
-        description: error.response.data.message,
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-    }
-  };
   useEffect(() => {
-    user && currentChat._id ? fetchMessages() : setMessages([]);
-  }, [currentChat]);
+    const fetchMessages = async () => {
+      try {
+        setIsLoading(true);
+        const { data } = await axios.get("/api/message", {
+          params: {
+            chatId: currentChat._id,
+          },
+
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
+        setMessages(data);
+        setIsLoading(false);
+      } catch (error) {
+        toast({
+          title: "Error Occurred!",
+          description: error.response.data.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    };
+    if (currentChat._id) {
+      fetchMessages();
+    } else {
+      setMessages([]);
+    }
+  }, [currentChat, user, toast]);
 
   const updateMessages = (message) => {
     console.log(currentChat);
     if (currentChat._id === message.chat._id) {
       setMessages([message, ...messages]);
     }
-    setChats(
-      chats.filter((item) => {
-        if (message.chat._id === item._id) {
-          item.latestMessage = message;
-        }
-        return true;
-      })
-    );
+
+    if (!currentChat._id) {
+      const newChat = { ...message.chat, latestMessage: message };
+      setChats([newChat, ...chats]);
+      setCurrentChat(newChat);
+    }
   };
 
   useEffect(() => {
-    socket.on("new message", ({ user, message }) => {
+    const newMessageHandler = ({ user, message }) => {
       if (!currentChat._id) {
         setCurrentChat(message.chat);
       }
       updateMessages(message);
-    });
-  }, []);
+    };
+    socket.on("new message", newMessageHandler);
+    return () => {
+      socket.off("new message", newMessageHandler);
+    };
+  });
 
   return (
     <Flex
@@ -88,7 +95,7 @@ const ChatBox = () => {
       />
       <ChatBoxTopBar />
       <Flex
-        direction="column-reverse"
+        direction={isLoading ? "column" : "column-reverse"}
         pos="absolute"
         bottom="0"
         w="100%"
@@ -173,9 +180,12 @@ const ChatBox = () => {
                 mt={2}
                 mb={2}
                 boxShadow="base"
+                maxW="90%"
               >
                 <Box sx={arrowStyle}></Box>
-                <Text fontSize="sm">{message.content}</Text>
+                <Text fontSize="sm" whiteSpace="pre-wrap">
+                  {message.content}
+                </Text>
                 <Text fontSize={11} m={-1} mb={-2} alignSelf="flex-end">
                   {sentAtString}
                 </Text>

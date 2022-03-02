@@ -1,5 +1,5 @@
 import { Avatar } from "@chakra-ui/avatar";
-import { ArrowBackIcon } from "@chakra-ui/icons";
+import { ArrowBackIcon, CheckIcon, Icon } from "@chakra-ui/icons";
 import { Flex } from "@chakra-ui/layout";
 import {
   Drawer,
@@ -7,9 +7,68 @@ import {
   DrawerContent,
   DrawerHeader,
 } from "@chakra-ui/modal";
-import { Text } from "@chakra-ui/react";
+import {
+  Input,
+  InputGroup,
+  InputRightElement,
+  Text,
+  useToast,
+} from "@chakra-ui/react";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { MdModeEdit } from "react-icons/md";
+import { ChatState } from "../context/ChatContext";
 
-const ProfileDrawer = ({ isOpen, onClose, user, placement = "left" }) => {
+const ProfileDrawer = ({ isOpen, onClose, placement = "left" }) => {
+  const [editName, setEditName] = useState(false);
+  const [editAbout, setEditAbout] = useState(false);
+  const { user, setUser } = ChatState();
+  const [newName, setNewName] = useState(user?.name);
+  const [newAbout, setNewAbout] = useState(user?.about);
+  useEffect(() => {
+    setNewName(user?.name);
+    setNewAbout(user?.about);
+  }, [user]);
+  const toast = useToast();
+  const updateUserName = async () => {
+    if (!newName) {
+      toast({
+        title: "Username cannot be empty.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+
+      return;
+    }
+    setEditName(false);
+    setEditAbout(false);
+    try {
+      await axios.put(
+        "/api/user/updateDetails",
+        { userId: user._id, newName, newAbout },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        }
+      );
+      const currentUser = JSON.parse(localStorage.getItem("userInfo"));
+      currentUser.name = newName;
+      currentUser.about = newAbout;
+      setUser(currentUser);
+      localStorage.setItem("userInfo", JSON.stringify(currentUser));
+    } catch (error) {
+      toast({
+        title: "Error Occurred!",
+        description: error.response.data.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
   return (
     <Drawer
       size="sm"
@@ -27,6 +86,8 @@ const ProfileDrawer = ({ isOpen, onClose, user, placement = "left" }) => {
             fontSize="24"
             cursor="pointer"
             onClick={() => {
+              setEditName(false);
+              setEditAbout(false);
               onClose();
             }}
           />
@@ -53,7 +114,40 @@ const ProfileDrawer = ({ isOpen, onClose, user, placement = "left" }) => {
               <Text fontSize="sm" color="teal.600">
                 Your name
               </Text>
-              <Text>{user?.name}</Text>
+              <Flex justifyContent="space-between" h="35px">
+                {editName ? (
+                  <InputGroup>
+                    <Input
+                      value={newName}
+                      variant="flushed"
+                      h="35px"
+                      borderColor="teal.600"
+                      focusBorderColor="teal.600"
+                      onChange={(e) => setNewName(e.target.value)}
+                    />
+                    <InputRightElement
+                      children={
+                        <CheckIcon
+                          color="gray.400"
+                          onClick={updateUserName}
+                          cursor="pointer"
+                        />
+                      }
+                    />
+                  </InputGroup>
+                ) : (
+                  <>
+                    <Text>{newName}</Text>
+                    <Icon
+                      as={MdModeEdit}
+                      fontSize="1.25em"
+                      color="gray.400"
+                      cursor="pointer"
+                      onClick={() => setEditName(true)}
+                    />
+                  </>
+                )}
+              </Flex>
             </Flex>
             <Text px={8} py={4} fontSize="sm" color="gray.600">
               This is not your username or pin. This name will be visible to
@@ -70,7 +164,40 @@ const ProfileDrawer = ({ isOpen, onClose, user, placement = "left" }) => {
               <Text fontSize="sm" color="teal.600">
                 About
               </Text>
-              <Text>{user?.about}</Text>
+              <Flex justifyContent="space-between">
+                {editAbout ? (
+                  <InputGroup>
+                    <Input
+                      value={newAbout}
+                      variant="flushed"
+                      h="35px"
+                      borderColor="teal.600"
+                      focusBorderColor="teal.600"
+                      onChange={(e) => setNewAbout(e.target.value)}
+                    />
+                    <InputRightElement
+                      children={
+                        <CheckIcon
+                          color="gray.400"
+                          onClick={updateUserName}
+                          cursor="pointer"
+                        />
+                      }
+                    />
+                  </InputGroup>
+                ) : (
+                  <>
+                    <Text>{newAbout}</Text>
+                    <Icon
+                      as={MdModeEdit}
+                      fontSize="1.25em"
+                      color="gray.400"
+                      cursor="pointer"
+                      onClick={() => setEditAbout(true)}
+                    />
+                  </>
+                )}
+              </Flex>
             </Flex>
           </Flex>
         </DrawerBody>

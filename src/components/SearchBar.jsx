@@ -2,7 +2,7 @@ import { ArrowBackIcon, SearchIcon } from "@chakra-ui/icons";
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/input";
 import { Box } from "@chakra-ui/layout";
 import axios from "axios";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChatState } from "../context/ChatContext";
 
 const SearchBar = () => {
@@ -25,18 +25,24 @@ const SearchBar = () => {
     });
     setSearchResults(data);
   };
+
+  const toggleSearchIcon = () => {
+    if (isSearchIconVisible) {
+      searchInputRef.current.focus();
+    } else {
+      setSearchQuery("");
+      searchIconRef.current.focus();
+    }
+  };
+
+  useEffect(() => {
+    if (!searchQuery) toggleSearchIcon();
+  }, [searchQuery]);
   return (
     <Box bg="white">
       <InputGroup>
         <InputLeftElement
-          onClick={() => {
-            if (isSearchIconVisible) {
-              searchInputRef.current.focus();
-            } else {
-              setSearchQuery("");
-              searchIconRef.current.focus();
-            }
-          }}
+          onClick={toggleSearchIcon}
           ref={searchIconRef}
           children={
             <>

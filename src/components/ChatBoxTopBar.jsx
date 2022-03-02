@@ -1,9 +1,9 @@
 import { Avatar } from "@chakra-ui/avatar";
-import { Flex, HStack, Spacer } from "@chakra-ui/layout";
-import { MdMoreVert } from "react-icons/md";
+import { Flex, HStack } from "@chakra-ui/layout";
 import { Text } from "@chakra-ui/react";
-import { ChatState } from "../context/ChatContext";
 import { useEffect, useState } from "react";
+import { MdMoreVert } from "react-icons/md";
+import { ChatState } from "../context/ChatContext";
 
 const ChatBoxTopBar = () => {
   const { user, socket, currentChat, setTypingUserId, setShowContactInfo } =
@@ -36,7 +36,7 @@ const ChatBoxTopBar = () => {
     return () => {
       socket.off("typing", typingHandler);
     };
-  }, [currentChat]);
+  }, [currentChat, socket, setTypingUserId, user._id]);
 
   return (
     <HStack px="4" py="3" bg="gray.100" spacing="30px" zIndex="100">
@@ -52,11 +52,24 @@ const ChatBoxTopBar = () => {
         direction="column"
         cursor="pointer"
         onClick={() => setShowContactInfo(true)}
+        flex="2"
+        pos="relative"
+        marginInlineStart="15px !important;"
       >
         <Text fontSize="lg">{name}</Text>
-        {isTyping ? <Text fontSize="xs">typing...</Text> : <>&nbsp;</>}
+        {isTyping && (
+          <Text
+            pos="absolute"
+            top="5"
+            py="3px"
+            fontSize="xs"
+            color="green.500"
+            fontWeight="bold"
+          >
+            typing...
+          </Text>
+        )}
       </Flex>
-      <Spacer />
       <MdMoreVert size="1.5em" color="#7c7a7a" cursor="pointer" />
     </HStack>
   );

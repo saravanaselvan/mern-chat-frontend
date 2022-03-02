@@ -1,5 +1,13 @@
 import { Avatar } from "@chakra-ui/avatar";
-import { Divider, HStack, Spacer, VStack } from "@chakra-ui/layout";
+import {
+  Badge,
+  Box,
+  Divider,
+  Flex,
+  HStack,
+  Spacer,
+  VStack,
+} from "@chakra-ui/layout";
 import { Icon, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { MdCheck } from "react-icons/md";
@@ -7,7 +15,7 @@ import { ChatState } from "../context/ChatContext";
 
 const ChatInfo = ({ chat }) => {
   const { user, typingUserId, setTypingUserId } = ChatState();
-  const { latestMessage } = chat;
+  const { latestMessage, notification } = chat;
   const [showTyping, setShowTyping] = useState(false);
   let name;
   let pic;
@@ -62,7 +70,7 @@ const ChatInfo = ({ chat }) => {
           </Text>
         )}
         {!showTyping && (
-          <Text
+          <Flex
             sx={{
               marginTop: "0px !important;",
               maxWidth: "325px;",
@@ -84,8 +92,29 @@ const ChatInfo = ({ chat }) => {
                 style={{ marginRight: "2px", marginTop: "3px" }}
               />
             )}
-            {latestMessage?.content ? latestMessage?.content : <>&nbsp;</>}
-          </Text>
+            <Box
+              flex={1}
+              fontWeight={
+                notification && notification.unreadCount > 0 ? "bold" : ""
+              }
+            >
+              {latestMessage?.content ? latestMessage?.content : <>&nbsp;</>}
+            </Box>
+            {notification && notification.unreadCount > 0 && (
+              <Flex
+                color="white"
+                fontWeight="bold"
+                w={6}
+                h={6}
+                borderRadius="50%"
+                backgroundColor="green.400"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <span>{notification?.unreadCount}</span>
+              </Flex>
+            )}
+          </Flex>
         )}
       </VStack>
     </HStack>

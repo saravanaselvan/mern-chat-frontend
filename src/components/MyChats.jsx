@@ -16,6 +16,7 @@ const MyChats = ({ selectChat, selectUser }) => {
     chats,
     setChats,
     currentChat,
+    socket,
   } = ChatState();
   const toast = useToast();
   const history = useHistory();
@@ -49,6 +50,62 @@ const MyChats = ({ selectChat, selectUser }) => {
     if (user) fetchChats();
   }, [user, history]);
 
+  const newMessageHandler = ({ user, message, notification }) => {
+    const availableChat = chats.filter((item) => item._id === message.chat._id);
+    if (availableChat.length) {
+      setChats(
+        chats.filter((item) => {
+          if (message.chat._id === item._id) {
+            item.latestMessage = message;
+            item.notification = notification;
+          }
+          return true;
+        })
+      );
+      currentChat && clearCurrentChatNotification();
+    } else {
+      const newChat = { ...message.chat, latestMessage: message, notification };
+      setChats([newChat, ...chats]);
+      console.log(chats);
+    }
+  };
+
+  const clearCurrentChatNotification = async () => {
+    // setTimeout(() => {
+    setChats(
+      chats.filter((item) => {
+        if (currentChat._id === item._id) {
+          item.notification = null;
+        }
+        return true;
+      })
+    );
+
+    await axios.put(
+      "api/notification/clear",
+      {
+        chatId: currentChat._id,
+        userId: user._id,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      }
+    );
+    // }, 2000);
+  };
+  useEffect(() => {
+    socket?.on("new message", newMessageHandler);
+    return () => {
+      socket?.off("new message", newMessageHandler);
+    };
+  }, [socket, chats]);
+
+  useEffect(() => {
+    currentChat && clearCurrentChatNotification();
+  }, [currentChat]);
   return (
     <Box h="100%" bg="white">
       <Divider />

@@ -27,7 +27,12 @@ const ChatPage = () => {
 
   return (
     <Flex w="100%">
-      <Flex direction="column" w="35%" h="100vh">
+      <Flex
+        d={{ base: currentChat ? "none" : "flex", md: "flex" }}
+        direction="column"
+        w={{ base: !currentChat ? "100%" : "35%", md: "35%" }}
+        h="100vh"
+      >
         <TopBar />
         <SearchBar />
         <MyChats

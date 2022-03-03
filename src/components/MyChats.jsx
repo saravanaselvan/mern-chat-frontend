@@ -66,7 +66,6 @@ const MyChats = ({ selectChat, selectUser }) => {
     } else {
       const newChat = { ...message.chat, latestMessage: message, notification };
       setChats([newChat, ...chats]);
-      console.log(chats);
     }
   };
 
@@ -97,6 +96,7 @@ const MyChats = ({ selectChat, selectUser }) => {
     // }, 2000);
   };
   useEffect(() => {
+    socket?.emit("setup", user._id);
     socket?.on("new message", newMessageHandler);
     return () => {
       socket?.off("new message", newMessageHandler);

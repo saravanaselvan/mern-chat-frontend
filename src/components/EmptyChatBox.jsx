@@ -5,7 +5,8 @@ import { MdLocalBar } from "react-icons/md";
 const EmptyChatBox = () => {
   return (
     <Flex
-      w="70%"
+      d={{ base: "none", md: "flex" }}
+      w={{ base: "0%", md: "70%" }}
       bg="gray.50"
       h="100vh"
       alignItems="center"

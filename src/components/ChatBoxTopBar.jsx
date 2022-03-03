@@ -1,13 +1,21 @@
 import { Avatar } from "@chakra-ui/avatar";
+import { ArrowBackIcon } from "@chakra-ui/icons";
 import { Flex, HStack } from "@chakra-ui/layout";
-import { Text } from "@chakra-ui/react";
+import { IconButton, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { MdMoreVert } from "react-icons/md";
 import { ChatState } from "../context/ChatContext";
 
 const ChatBoxTopBar = () => {
-  const { user, socket, currentChat, setTypingUserId, setShowContactInfo } =
-    ChatState();
+  const {
+    user,
+    socket,
+    currentChat,
+    setCurrentChat,
+    setTypingUserId,
+    setShowContactInfo,
+    chats,
+  } = ChatState();
   const [isTyping, setIsTyping] = useState(false);
   let name;
   let pic;
@@ -20,18 +28,19 @@ const ChatBoxTopBar = () => {
     pic = otherUser.pic;
   }
 
+  const typingHandler = ({ user, currentChatId }) => {
+    if (!chats.find((chat) => chat._id === currentChatId)) return;
+    let otherUser = currentChat.users.filter((u) => u._id !== user._id)[0];
+    if (otherUser._id === user._id) {
+      setIsTyping(true);
+      setTimeout(() => {
+        setIsTyping(false);
+      }, 3000);
+    } else {
+      setTypingUserId(user._id);
+    }
+  };
   useEffect(() => {
-    const typingHandler = (message) => {
-      let otherUser = currentChat.users.filter((u) => u._id !== user._id)[0];
-      if (otherUser._id === message.user._id) {
-        setIsTyping(true);
-        setTimeout(() => {
-          setIsTyping(false);
-        }, 3000);
-      } else {
-        setTypingUserId(message.user._id);
-      }
-    };
     socket.on("typing", typingHandler);
     return () => {
       socket.off("typing", typingHandler);
@@ -40,12 +49,22 @@ const ChatBoxTopBar = () => {
 
   return (
     <HStack px="4" py="3" bg="gray.100" spacing="30px" zIndex="100">
+      <ArrowBackIcon
+        d={{ base: "flex", md: "none" }}
+        fontSize="24"
+        cursor="pointer"
+        onClick={() => {
+          setCurrentChat("");
+        }}
+        mr={2}
+      />
       <Avatar
         w="40px"
         h="40px"
         name={name}
         src={pic}
         cursor="pointer"
+        marginInlineStart="0px !important"
         onClick={() => setShowContactInfo(true)}
       />
       <Flex

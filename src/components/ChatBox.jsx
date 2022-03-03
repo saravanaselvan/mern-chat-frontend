@@ -48,7 +48,6 @@ const ChatBox = () => {
   }, [currentChat, user, toast]);
 
   const updateMessages = (message) => {
-    console.log(currentChat);
     if (currentChat._id === message.chat._id) {
       setMessages([message, ...messages]);
     }
@@ -67,6 +66,7 @@ const ChatBox = () => {
       }
       updateMessages(message);
     };
+    socket?.emit("setup", user._id);
     socket.on("new message", newMessageHandler);
     return () => {
       socket.off("new message", newMessageHandler);
@@ -75,7 +75,7 @@ const ChatBox = () => {
 
   return (
     <Flex
-      w="70%"
+      w={{ base: "100%", md: "70%" }}
       bg="gray.50"
       h="100vh"
       flexDirection="column"

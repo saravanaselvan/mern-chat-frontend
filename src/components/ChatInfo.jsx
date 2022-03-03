@@ -34,7 +34,6 @@ const ChatInfo = ({ chat }) => {
   useEffect(() => {
     let otherUser = chat.users.filter((u) => u._id !== user._id)[0];
     if (typingUserId === otherUser._id) {
-      console.log(typingUserId);
       setShowTyping(true);
     }
     setTimeout(() => {
@@ -73,10 +72,7 @@ const ChatInfo = ({ chat }) => {
           <Flex
             sx={{
               marginTop: "0px !important;",
-              maxWidth: "325px;",
-              overflow: "hidden;",
-              whiteSpace: "nowrap;",
-              textOverflow: "ellipsis;",
+              // maxWidth: "325px;",
               display: "flex",
               alignItems: "center",
             }}
@@ -93,6 +89,12 @@ const ChatInfo = ({ chat }) => {
               />
             )}
             <Box
+              sx={{
+                overflow: "hidden;",
+                whiteSpace: "nowrap;",
+                textOverflow: "ellipsis;",
+              }}
+              maxW={{ base: "370px", md: "300px" }}
               flex={1}
               fontWeight={
                 notification && notification.unreadCount > 0 ? "bold" : ""

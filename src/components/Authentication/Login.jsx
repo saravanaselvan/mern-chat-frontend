@@ -44,7 +44,6 @@ const Login = () => {
         config
       );
       setLoading(false);
-      console.log(data);
       localStorage.setItem("userInfo", JSON.stringify(data));
       setUser(data);
       history.push("/chats");

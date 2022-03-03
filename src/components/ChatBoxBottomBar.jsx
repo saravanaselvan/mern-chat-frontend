@@ -24,7 +24,7 @@ const ChatBoxBottomBar = ({ updateMessages }) => {
   const updateContent = (e) => {
     if (e.key !== "Enter") {
       setContent(e.target.value);
-      socket.emit("typing", { user, content: e.target.value });
+      socket.emit("typing", { user, currentChatId: currentChat._id });
     }
   };
 
@@ -66,7 +66,7 @@ const ChatBoxBottomBar = ({ updateMessages }) => {
       spacing="30px"
       pos="fixed"
       bottom="0"
-      w="67%"
+      w={{ base: "100%", md: "67%" }}
     >
       <MdEmojiEmotions size="2em" color="#7c7a7a" cursor="pointer" />
       <AttachmentIcon h={6} w={6} color="gray.600" cursor="pointer" />

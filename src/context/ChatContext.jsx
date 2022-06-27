@@ -19,9 +19,6 @@ const Context = ({ children }) => {
       ? process.env.REACT_APP_CHAT_API_URL
       : "/";
   useEffect(() => {
-    console.log(process.env.NODE_ENV);
-    console.log(process.env.REACT_APP_CHAT_API_URL);
-    console.log(socketURL);
     setSocket(io(socketURL));
     if (localStorage.getItem("userInfo")) {
       setUser(JSON.parse(localStorage.getItem("userInfo")));

@@ -17,6 +17,7 @@ const Context = ({ children }) => {
   const socketURL =
     process.env.NODE_ENV === "production" ? process.env.CHAT_API_URL : "/";
   useEffect(() => {
+    console.log(socketURL);
     setSocket(io(socketURL));
     if (localStorage.getItem("userInfo")) {
       setUser(JSON.parse(localStorage.getItem("userInfo")));

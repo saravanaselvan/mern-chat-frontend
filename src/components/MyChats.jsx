@@ -12,6 +12,7 @@ const MyChats = ({ selectChat, selectUser }) => {
     user,
     setUser,
     searchQuery,
+    setSearchQuery,
     searchResults,
     chats,
     setChats,
@@ -95,6 +96,18 @@ const MyChats = ({ selectChat, selectUser }) => {
     );
     // }, 2000);
   };
+
+  const selectUserFromSearch = (user) => {
+    const availableChat = chats.find((chat) =>
+      chat.users.map((u) => u._id).includes(user._id)
+    );
+    if (availableChat) {
+      selectChat(availableChat);
+    } else {
+      selectUser(user);
+      setSearchQuery("");
+    }
+  };
   useEffect(() => {
     socket?.emit("setup", user._id);
     socket?.on("new message", newMessageHandler);
@@ -118,7 +131,7 @@ const MyChats = ({ selectChat, selectUser }) => {
                 pt="4"
                 cursor="pointer"
                 _hover={{ background: "#EDF2F7" }}
-                onClick={() => selectUser(item)}
+                onClick={() => selectUserFromSearch(item)}
               >
                 <SearchResultItem user={item} />
               </ListItem>

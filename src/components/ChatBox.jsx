@@ -50,6 +50,14 @@ const ChatBox = () => {
   const updateMessages = (message) => {
     if (currentChat._id === message.chat._id) {
       setMessages([message, ...messages]);
+      setChats(
+        chats.filter((item) => {
+          if (message.chat._id === item._id) {
+            item.latestMessage = message;
+          }
+          return true;
+        })
+      );
     }
 
     if (!currentChat._id) {

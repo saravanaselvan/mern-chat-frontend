@@ -1,4 +1,3 @@
-import { Avatar } from "@chakra-ui/avatar";
 import { ArrowBackIcon, CheckIcon, Icon } from "@chakra-ui/icons";
 import { Flex } from "@chakra-ui/layout";
 import {
@@ -18,6 +17,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { MdModeEdit } from "react-icons/md";
 import { ChatState } from "../context/ChatContext";
+import ProfilePic from "./ProfilePic";
 
 const ProfileDrawer = ({ isOpen, onClose, placement = "left" }) => {
   const [editName, setEditName] = useState(false);
@@ -30,6 +30,7 @@ const ProfileDrawer = ({ isOpen, onClose, placement = "left" }) => {
     setNewAbout(user?.about);
   }, [user]);
   const toast = useToast();
+
   const updateUserName = async () => {
     if (!newName) {
       toast({
@@ -93,16 +94,9 @@ const ProfileDrawer = ({ isOpen, onClose, placement = "left" }) => {
           />
           Profile
         </DrawerHeader>
+        <ProfilePic user={user} />
         <DrawerBody bg="gray.200" pl={0} pr={0}>
           <Flex direction="column" gap={4}>
-            <Avatar
-              w="250px"
-              h="250px"
-              name={user?.name}
-              src={user?.pic}
-              cursor="pointer"
-              alignSelf="center"
-            />
             <Flex
               direction="column"
               bg="#fff"

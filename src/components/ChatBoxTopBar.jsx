@@ -28,16 +28,18 @@ const ChatBoxTopBar = () => {
     pic = otherUser.pic;
   }
 
-  const typingHandler = ({ user, currentChatId }) => {
+  const typingHandler = ({ typingUser, currentChatId }) => {
     if (!chats.find((chat) => chat._id === currentChatId)) return;
-    let otherUser = currentChat.users.filter((u) => u._id !== user._id)[0];
+    let otherUser = currentChat.users.filter(
+      (u) => u._id !== typingUser._id
+    )[0];
     if (otherUser._id === user._id) {
       setIsTyping(true);
       setTimeout(() => {
         setIsTyping(false);
       }, 3000);
     } else {
-      setTypingUserId(user._id);
+      setTypingUserId(typingUser._id);
     }
   };
   useEffect(() => {

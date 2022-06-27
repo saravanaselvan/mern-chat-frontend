@@ -1,2 +1,2 @@
 
-/api/*        https://mern-chat-whatsapp.herokuapp.com/:splat   200
+/api/*        https://mern-chat-whatsapp.herokuapp.com/api/:splat   200

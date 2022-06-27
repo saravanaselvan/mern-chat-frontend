@@ -14,8 +14,10 @@ const Context = ({ children }) => {
   const [typingUserId, setTypingUserId] = useState();
   const [showContactInfo, setShowContactInfo] = useState(false);
   const history = useHistory();
+  const socketURL =
+    process.env.NODE_ENV === "production" ? process.env.CHAT_API_URL : "/";
   useEffect(() => {
-    setSocket(io());
+    setSocket(io(socketURL));
     if (localStorage.getItem("userInfo")) {
       setUser(JSON.parse(localStorage.getItem("userInfo")));
     } else {

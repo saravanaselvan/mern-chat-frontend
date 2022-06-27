@@ -1,13 +1,5 @@
 import { Avatar } from "@chakra-ui/avatar";
-import {
-  Badge,
-  Box,
-  Divider,
-  Flex,
-  HStack,
-  Spacer,
-  VStack,
-} from "@chakra-ui/layout";
+import { Box, Flex, HStack, VStack } from "@chakra-ui/layout";
 import { Icon, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { MdCheck } from "react-icons/md";

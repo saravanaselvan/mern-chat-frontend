@@ -1,7 +1,7 @@
 import { Avatar } from "@chakra-ui/avatar";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { Flex, HStack } from "@chakra-ui/layout";
-import { IconButton, Text } from "@chakra-ui/react";
+import { Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { MdMoreVert } from "react-icons/md";
 import { ChatState } from "../context/ChatContext";

@@ -15,10 +15,12 @@ const Context = ({ children }) => {
   const [showContactInfo, setShowContactInfo] = useState(false);
   const history = useHistory();
   const socketURL =
-    process.env.NODE_ENV === "production" ? process.env.CHAT_API_URL : "/";
+    process.env.NODE_ENV === "production"
+      ? process.env.REACT_APP_CHAT_API_URL
+      : "/";
   useEffect(() => {
     console.log(process.env.NODE_ENV);
-    console.log(process.env.CHAT_API_URL);
+    console.log(process.env.REACT_APP_CHAT_API_URL);
     console.log(socketURL);
     setSocket(io(socketURL));
     if (localStorage.getItem("userInfo")) {
